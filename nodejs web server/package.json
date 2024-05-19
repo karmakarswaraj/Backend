@@ -1,0 +1,14 @@
+{
+  "name": "nodejs-web-server",
+  "version": "1.0.0",
+  "description": "Basic webserver using node js",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js"
+  },
+  "author": "Swaraj Karmakar",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  }
+}
