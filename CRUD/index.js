@@ -50,7 +50,6 @@ app.put("/product/:id", (req, res) => {
     res.status(200).send(singleId);
   }
 });
-
 //DELETE helps to delete data from the DB.
 app.delete("/product/:id", (req, res) => {
   const singleId = data.findIndex((t) => t.id === +req.params.id);
