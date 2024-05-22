@@ -2,10 +2,10 @@
   "name": "crud",
   "version": "1.0.0",
   "description": "Basic curd operations",
-  "main": "index.js",
+  "main": "script.js",
   "type": "module",
   "scripts": {
-    "dev": "nodemon index.js"
+    "dev": "nodemon script.js"
   },
   "author": "Swaraj Karmakar",
   "license": "ISC",
