@@ -1,13 +1,21 @@
-Go to package.json and change 
+# CRUD Operations
 
-USE THIS TO RUN server.js to run the specific file that uses data.json as product list.
+This project demonstrates basic CRUD operations using Node.js and Express.
+
+## Instructions to Run the Project
+
+### Running `server.js` (Uses `data.json` as product list)
+
+To run the specific file `server.js` that uses `data.json` as the product list, use the following `package.json` configuration:
+
+```json
 {
   "name": "crud",
   "version": "1.0.0",
   "description": "Basic curd operations",
-  "main": "script.js",
+  "main": "server.js",
   "scripts": {
-    "dev": "nodemon script.js"
+    "dev": "nodemon server.js"
   },
   "author": "Swaraj Karmakar",
   "license": "ISC",
@@ -19,9 +27,13 @@ USE THIS TO RUN server.js to run the specific file that uses data.json as produc
     "nodemon": "^3.1.0"
   }
 }
+```
 
+#### Running index.js (Works in server memory)
 
-USE THIS TO RUN index.json to run the specific file that worls on in server memory.
+To run the specific file `index.js` that works on in server memory, use the following `package.json` configuration:
+
+```json
 {
   "name": "crud",
   "version": "1.0.0",
@@ -41,3 +53,9 @@ USE THIS TO RUN index.json to run the specific file that worls on in server memo
     "nodemon": "^3.1.0"
   }
 }
+```
+
+##### Notes
+
+Ensure you have nodemon installed globally or locally in your project to use the dev script for automatic server restarts.
+You can switch between the two configurations by updating the package.json file accordingly.
