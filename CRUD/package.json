@@ -2,16 +2,16 @@
   "name": "crud",
   "version": "1.0.0",
   "description": "Basic curd operations",
-  "main": "script.js",
-  "type": "module",
+  "main": "server.js",
   "scripts": {
-    "dev": "nodemon script.js"
+    "dev": "nodemon server.js"
   },
   "author": "Swaraj Karmakar",
   "license": "ISC",
   "dependencies": {
     "express": "^4.19.2",
-    "express-json": "^1.0.0"
+    "express-json": "^1.0.0",
+    "morgan": "^1.10.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.0"

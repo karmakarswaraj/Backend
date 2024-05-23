@@ -6,7 +6,6 @@ USE THIS TO RUN server.js to run the specific file that uses data.json as produc
   "version": "1.0.0",
   "description": "Basic curd operations",
   "main": "script.js",
-  "type": "module",
   "scripts": {
     "dev": "nodemon script.js"
   },
