@@ -49,7 +49,8 @@ server.put("/products/:id", (req, res) => {
   const id = +req.params.id;
   const productIndex = products.findIndex((p) => p.id === id);
   if (productIndex !== -1) {
-    products[productIndex] = { ...req.body, id: id };
+    const product = products[productIndex];
+    products[productIndex] = { ...product, ...req.body, id: id };
     res.status(200).json(products[productIndex]);
   } else {
     res.status(404).json({ error: "Product not found" });
