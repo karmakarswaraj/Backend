@@ -1,61 +1,41 @@
-const fs = require("fs");
 
-const data = JSON.parse(fs.readFileSync('data.json', "utf-8"));
-
+const fs = require('fs');
+// const index = fs.readFileSync('index.html', 'utf-8');
+const data = JSON.parse(fs.readFileSync('data.json', 'utf-8'));
 const users = data.users;
 
-// Create POST /users
-exports.create = (req, res) => {
-  const newUser = req.body;
-  users.push(newUser);
-  res.status(201).json(newUser);
+exports.createUser = (req, res) => {
+  console.log(req.body);
+  users.push(req.body);
+  res.status(201).json(req.body);
 };
-// Read GET /users
-exports.get = (req, res) => {
+
+exports.getAllUsers = (req, res) => {
   res.json(users);
 };
-// Read GET /users/:id
-exports.getAll = (req, res) => {
+
+exports.getUser = (req, res) => {
   const id = +req.params.id;
   const user = users.find((p) => p.id === id);
-  if (user) {
-    res.json(user);
-  } else {
-    res.status(404).json({ error: "user not found" });
-  }
+  res.json(user);
 };
-// Update PUT /users/:id
-exports.replace = (req, res) => {
+exports.replaceUser = (req, res) => {
   const id = +req.params.id;
   const userIndex = users.findIndex((p) => p.id === id);
-  if (userIndex !== -1) {
-    const user = users[userIndex];
-    users[userIndex] = { ...user, ...req.body, id: id };
-    res.status(200).json(users[userIndex]);
-  } else {
-    res.status(404).json({ error: "user not found" });
-  }
+  users.splice(userIndex, 1, { ...req.body, id: id });
+  res.status(201).json();
 };
-// Update PATCH /users/:id
-exports.update = (req, res) => {
+exports.updateUser = (req, res) => {
   const id = +req.params.id;
   const userIndex = users.findIndex((p) => p.id === id);
-  if (userIndex !== -1) {
-    const user = users[userIndex];
-    users[userIndex] = { ...user, ...req.body };
-    res.status(200).json(users[userIndex]);
-  } else {
-    res.status(404).json({ error: "user not found" });
-  }
+  const user = users[userIndex];
+  users.splice(userIndex, 1, { ...user, ...req.body });
+  res.status(201).json();
 };
-// Delete DELETE /users/:id
-exports.delete = (req, res) => {
+exports.deleteUser = (req, res) => {
   const id = +req.params.id;
   const userIndex = users.findIndex((p) => p.id === id);
-  if (userIndex !== -1) {
-    const user = users.splice(userIndex, 1)[0];
-    res.status(200).json(user);
-  } else {
-    res.status(404).json({ error: "user not found" });
-  }
+  const user = users[userIndex];
+  users.splice(userIndex, 1);
+  res.status(201).json(user);
 };

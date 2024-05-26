@@ -1,22 +1,34 @@
-const path = require("path");
-const express = require("express");
-const morgan = require("morgan");
+require('dotenv').config();
+const express = require('express');
+const morgan = require('morgan');
 
-// Read data.json file
 const server = express();
 
-const productRouter = require('./routes/product')
-const userRouter = require('./routes/user')
+const productRouter = require('./routes/product');
+const userRouter = require('./routes/user');
 
+// Log the environment variables to ensure they're loaded correctly
+console.log("env DB_PASSWORD:", process.env.DB_PASSWORD);
+console.log("env PORT:", process.env.PORT);
+console.log("env PUBLIC_DIR:", process.env.PUBLIC_DIR);
 
 // Middleware
 server.use(express.json());
+server.use(morgan('combined')); // Use 'combined' format to avoid deprecation warning
 
 // API Endpoints
-server.use('/products',productRouter.router);
-server.use('/users',userRouter.router);
+if (process.env.PUBLIC_DIR) {
+  server.use(express.static(process.env.PUBLIC_DIR));
+} else {
+  console.error('Error: PUBLIC_DIR environment variable is not defined.');
+  process.exit(1);
+}
+
+server.use('/products', productRouter.router);
+server.use('/users', userRouter.router);
 
 // Start server
-server.listen(8080, () => { 
-  console.log("server started");
+const port = process.env.PORT || 3000;
+server.listen(port, () => {
+  console.log(`Server started on port ${port}`);
 });

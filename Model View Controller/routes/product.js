@@ -1,14 +1,14 @@
-const express = require("express");
-const productController = require("../controller/product");
+const express = require('express');
+const productController = require('../controller/product');
 
 const router = express.Router();
 
 router
-  .post("",productController.create)
-  .get("",productController.gettAll)
-  .get("/:id",productController.get)
-  .put("/:id",productController.replace)
-  .patch("/:id",productController.update)
-  .delete("/:id",productController.delete);
+  .post('/', productController.createProduct)
+  .get('/', productController.getAllProducts)
+  .get('/:id', productController.getProduct)
+  .put('/:id', productController.replaceProduct)
+  .patch('/:id', productController.updateProduct)
+  .delete('/:id', productController.deleteProduct);
 
-exports.router = router;
+exports.router = router;  
