@@ -1,0 +1,20 @@
+{
+  "name": "model-view-controller",
+  "version": "1.0.0",
+  "description": "Basic curd operations using MVC standards",
+  "main": "index.js",
+  "dependencies": {
+    "express": "^4.19.2",
+    "express-json": "^1.0.0",
+    "morgan": "^1.10.0"
+  },
+  "scripts": {
+    "dev": "nodemon server.js"
+  },
+  "keywords": [],
+  "author": "Swaraj Karmakar",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^3.1.1"
+  }
+}
