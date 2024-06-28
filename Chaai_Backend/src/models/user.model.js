@@ -18,7 +18,7 @@ const userSchema = new Schema(
       lowecase: true,
       trim: true,
     },
-    filename: {
+    fullname: {
       type: String,
       required: true,
       lowercase: true,

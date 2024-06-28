@@ -6,11 +6,9 @@ const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "./public/temp"); // Destination directory
   },
-  // Set filename with a unique suffix to avoid overwriting files
+  // Set filename with the original name
   filename: function (req, file, cb) {
-    // Generate a unique filename based on current timestamp and random number
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(null, file.originalname + "-" + uniqueSuffix); // File name format
+    cb(null, file.originalname); // File name format
   },
 });
 

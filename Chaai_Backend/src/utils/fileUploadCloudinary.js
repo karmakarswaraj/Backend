@@ -1,5 +1,4 @@
 import { v2 as cloudinary } from "cloudinary";
-import { log } from "console";
 import fs from "fs";
 
 // Configure Cloudinary with API credentials from environment variables
@@ -17,7 +16,8 @@ const uploadOnCLoudinary = async (filePath) => {
     const result = await cloudinary.uploader.upload(filePath, {
       resource_type: "auto",
     });
-    console.log("File is uploaded to Cloudinary: ", result.url); // Log Cloudinary URL of uploaded file
+
+    fs.unlinkSync(filePath); // Delete file from local storage on success
     return result; // Return Cloudinary upload result object
   } catch (error) {
     fs.unlinkSync(filePath); // Delete file from local storage on error
