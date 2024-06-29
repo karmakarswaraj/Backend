@@ -60,7 +60,7 @@ userSchema.pre("save", async function (next) {
 });
 
 // Define a method to compare a given password with the hashed password stored in the database
-userSchema.methods.isPassword = async function (password) {
+userSchema.methods.isPasswordValid = async function (password) {
   // Compare the plaintext password with the hashed password using bcrypt
   return await bcrypt.compare(password, this.password);
 };
