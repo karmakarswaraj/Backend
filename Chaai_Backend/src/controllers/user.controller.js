@@ -178,14 +178,131 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
     throw new ApiError(401, "Unauthorised request: User not found");
   }
 
-  if(user.refreshToken !== incomingToken) {
+  if (user.refreshToken !== incomingToken) {
     throw new ApiError(401, "Unauthorised request: Invalid token");
   }
 
-  const {accessToken, newRefreshToken} = await generateAccessAndRefreshTokens(user._id);
+  const { accessToken, newRefreshToken } = await generateAccessAndRefreshTokens(
+    user._id
+  );
 
-  res.status(200).cookie("accessToken", accessToken, options).cookie("refreshToken", newRefreshToken, options).json(new ApiResponse(200, null, "Access token refreshed successfully"))
-
+  res
+    .status(200)
+    .cookie("accessToken", accessToken, options)
+    .cookie("refreshToken", newRefreshToken, options)
+    .json(new ApiResponse(200, null, "Access token refreshed successfully"));
 });
 
-export { registerUser, loginUser, logoutUser, refreshAccessToken };
+const currentPasswordChange = asyncHandler(async (req, res) => {
+  //Get the password from the user (OLD)
+  const { oldPassword, newPassword } = req.body;
+  //check if the password is valid
+  if (!oldPassword || !newPassword) {
+    throw new ApiError(400, "Password is required");
+  }
+  //find the user
+  const user = await User.findById(req.user._id);
+  //get the new password from the user
+  const isValidPassword = await user.isPasswordValid(oldPassword);
+
+  if (!isValidPassword) {
+    throw new ApiError(400, "Invalid password");
+  }
+
+  //update the password in the database
+  user.password = newPassword;
+  await user.save({ validateBeforeSave: false });
+  //send response
+  return res
+    .status(200)
+    .json(new ApiResponse(200, null, "Password changed successfully"));
+});
+
+const getCurrentUser = asyncHandler(async (req, res) => {
+  //Get user
+  const user = req.user;
+  return res.status(200).json(200, user, "Current user is Displayed");
+});
+
+const updateAccountDetails = asyncHandler(async (req, res) => {
+  //Get user data
+  const { email, fullname } = req.body;
+  //check validation
+  if (!email || !fullname) {
+    throw new ApiError(400, "Enter the field to change");
+  }
+  //get user
+  const user = await User.findByIdAndUpdate(
+    req.user._id,
+    {
+      $set: { fullname, email }, //get the changes
+    },
+    { new: true }
+  ).select("-password");
+  //return
+  return res
+    .status(200)
+    .json(new ApiResponse(200, null, "Changed successfully updated"));
+});
+
+const updateUserAvatar = asyncHandler(async (req, res) => {
+  const avatarLocalPath = req.file?.path;
+  if (!avatarLocalPath) {
+    throw new ApiError(400, "Avatar file is missing");
+  }
+  const avatar = await uploadOnCLoudinary(avatarLocalPath);
+  if (!avatar.url) {
+    throw new ApiError(500, "Avatar file is not uploaded");
+  }
+  await User.findByIdAndUpdate(
+    req.user._id,
+    { $set: { avatar: avatar.url } },
+    {
+      new: true,
+    }
+  ).select("-password");
+  //return
+  return res
+    .status(200)
+    .json(new ApiResponse(200, null, "Changed successfully updated"));
+});
+
+const updateUserCoverImage = asyncHandler(async (req, res) => {
+  const coverImageLocalPath = req.file?.path;
+  if (!coverImageLocalPath) {
+    throw new ApiError(400, "CoverImage file is missing");
+  }
+  const coverImage = await uploadOnCLoudinary(coverImageLocalPath);
+  if (!coverImage.url) {
+    throw new ApiError(500, "CoverImage file is not uploaded");
+  }
+  await User.findByIdAndUpdate(
+    req.user._id,
+    { $set: { coverImage: coverImage.url } },
+    {
+      new: true,
+    }
+  ).select("-password");
+  //return
+  return res
+    .status(200)
+    .json(new ApiResponse(200, null, "Changed successfully updated"));
+});
+
+const getUserChannelProfile = asyncHandler(async (req, res) => {});
+
+const getWatchHistory = asyncHandler(async (req, res) => {});
+
+export {
+  registerUser,
+  loginUser,
+  logoutUser,
+  refreshAccessToken,
+  currentPasswordChange,
+  getCurrentUser,
+  updateAccountDetails,
+  updateUserAvatar,
+  updateUserCoverImage,
+  getUserChannelProfile,
+  getWatchHistory,
+};
