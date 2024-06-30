@@ -66,7 +66,7 @@ userSchema.methods.isPasswordValid = async function (password) {
 };
 
 // Define a method to generate an access token for the user
-userSchema.methods.generateAccessToken = async function () {
+userSchema.methods.generateAccessToken = function () {
   // Sign a new JWT containing the user's ID, email, username, and fullname
   // Use the ACCESS_TOKEN_SECRET and set the token's expiration time using ACCESS_TOKEN_EXPIRY
   return jwt.sign(
@@ -81,8 +81,7 @@ userSchema.methods.generateAccessToken = async function () {
   );
 };
 
-// Define a method to generate a refresh token for the user
-userSchema.methods.generateRefreshToken = async function () {
+userSchema.methods.generateRefreshToken = function () {
   // Sign a new JWT containing only the user's ID
   // Use the REFRESH_TOKEN_SECRET and set the token's expiration time using REFRESH_TOKEN_EXPIRY
   return jwt.sign(
