@@ -41,7 +41,7 @@ router.route("/current_user").get(verifyJWT, getCurrentUser);
 //Update Account Details
 router
   .route("/account_details")
-  .post(verifyJWT, upload.single("avatar"), updateAccountDetails);
+  .post(verifyJWT,updateAccountDetails);
 //Update User Avatar
 router
   .route("/account_details/avatar")
@@ -50,4 +50,5 @@ router
 router
   .route("/account_details/coverImage")
   .post(verifyJWT, upload.single("coverImage"), updateUserCoverImage);
+
 export default router;

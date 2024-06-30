@@ -44,4 +44,4 @@ const mongooseAggregatePaginate = require('mongoose-aggregate-paginate-v2');
 
 
 
-export const Video = mongoose.model("video", videoSchema);
+export const Video = mongoose.model("Video", videoSchema);
