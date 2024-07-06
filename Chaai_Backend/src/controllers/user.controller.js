@@ -334,9 +334,138 @@ const updateUserCoverImage = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, null, "Changed successfully updated"));
 });
 
-const getUserChannelProfile = asyncHandler(async (req, res) => {});
+const getUserChannelProfile = asyncHandler(async (req, res) => {
+  const { username } = req.params;
 
-const getWatchHistory = asyncHandler(async (req, res) => {});
+  if (!username) {
+    throw new ApiError(400, "Username is required");
+  }
+
+  const channel = await User.aggregate([
+    {
+      $match: {
+        username: username?.toLowerCase(),
+      },
+    },
+    {
+      $lookup: {
+        from: "subscriptions",
+        localField: "_id",
+        foreignField: "channel",
+        as: "subscriptions",
+      },
+    },
+    {
+      $lookup: {
+        from: "subscriptions",
+        localField: "_id",
+        foreignField: "subscriber",
+        as: "subscribed",
+      },
+    },
+    {
+      $addFields: {
+        totalSubscribers: {
+          $size: "$subscriptions",
+        },
+        totalSubscriptions: {
+          $size: "$subscribed",
+        },
+        isSubscribed: {
+          $cond: {
+            if: {
+              $in: [
+                mongoose.Types.ObjectId(req.user?._id),
+                "$subscribed.subscriber",
+              ],
+            },
+            then: true,
+            else: false,
+          },
+        },
+      },
+    },
+    {
+      $project: {
+        fullName: 1,
+        username: 1,
+        isSubscribed: 1,
+        avatar: 1,
+        coverImage: 1,
+        email: 1,
+        subscriptions: 1,
+        subscribed: 1,
+      },
+    },
+  ]);
+
+  if (!channel?.length) {
+    throw new ApiError(404, "User not found");
+  }
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(200, channel[0], "successfully got the user profile")
+    );
+});
+
+const getWatchHistory = asyncHandler(async (req, res) => {
+  const user = await User.aggregate([
+    {
+      $match: {
+        _id: new mongoose.Types.ObjectId(req.user?._id),
+      },
+    },
+    {
+      $lookup: {
+        from: "videos",
+        localField: "watchHistory",
+        foreignField: "_id",
+        as: "watchHistory",
+        pipeline: [
+          {
+            $lookup: {
+              from: "users",
+              localField: "owner",
+              foreignField: "_id",
+              as: "owner",
+              pipeline: [
+                {
+                  $project: {
+                    username: 1,
+                    fullName: 1,
+                    avatar: 1,
+                  },
+                },
+              ],
+            },
+          },
+          {
+            $addFields: {
+              owner: {
+                $arrayElemAt: ["$owner", 0],
+              },
+            },
+          },
+        ],
+      },
+    },
+  ]);
+  if (!user) {
+    throw new ApiError(404, "User not found");
+  }
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        user[0].watchHistory,
+        "successfully got watch history"
+      )
+    );
+});
 
 export {
   registerUser,
