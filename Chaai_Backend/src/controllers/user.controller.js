@@ -344,7 +344,7 @@ const getUserChannelProfile = asyncHandler(async (req, res) => {
   const channel = await User.aggregate([
     {
       $match: {
-        username: username?.toLowerCase(),
+        username: username.toLowerCase(),
       },
     },
     {
@@ -374,10 +374,7 @@ const getUserChannelProfile = asyncHandler(async (req, res) => {
         isSubscribed: {
           $cond: {
             if: {
-              $in: [
-                mongoose.Types.ObjectId(req.user?._id),
-                "$subscribed.subscriber",
-              ],
+              $in: [req.user?._id, "$subscribed.subscriber"],
             },
             then: true,
             else: false,
@@ -393,20 +390,20 @@ const getUserChannelProfile = asyncHandler(async (req, res) => {
         avatar: 1,
         coverImage: 1,
         email: 1,
-        subscriptions: 1,
-        subscribed: 1,
+        totalSubscribers: 1,
+        totalSubscriptions: 1,
       },
     },
   ]);
 
-  if (!channel?.length) {
+  if (!channel.length) {
     throw new ApiError(404, "User not found");
   }
 
   return res
     .status(200)
     .json(
-      new ApiResponse(200, channel[0], "successfully got the user profile")
+      new ApiResponse(200, channel[0], "Successfully got the user profile")
     );
 });
 
@@ -414,7 +411,7 @@ const getWatchHistory = asyncHandler(async (req, res) => {
   const user = await User.aggregate([
     {
       $match: {
-        _id: new mongoose.Types.ObjectId(req.user?._id),
+        _id: new mongoose.Types.ObjectId(req.user._id),
       },
     },
     {
@@ -433,8 +430,8 @@ const getWatchHistory = asyncHandler(async (req, res) => {
               pipeline: [
                 {
                   $project: {
-                    username: 1,
                     fullName: 1,
+                    username: 1,
                     avatar: 1,
                   },
                 },
@@ -444,7 +441,7 @@ const getWatchHistory = asyncHandler(async (req, res) => {
           {
             $addFields: {
               owner: {
-                $arrayElemAt: ["$owner", 0],
+                $first: "$owner",
               },
             },
           },
@@ -452,9 +449,6 @@ const getWatchHistory = asyncHandler(async (req, res) => {
       },
     },
   ]);
-  if (!user) {
-    throw new ApiError(404, "User not found");
-  }
 
   return res
     .status(200)
@@ -462,7 +456,7 @@ const getWatchHistory = asyncHandler(async (req, res) => {
       new ApiResponse(
         200,
         user[0].watchHistory,
-        "successfully got watch history"
+        "Watch history fetched successfully"
       )
     );
 });
