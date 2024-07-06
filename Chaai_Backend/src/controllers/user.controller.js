@@ -5,7 +5,7 @@ import { uploadOnCLoudinary } from "../utils/fileUploadCloudinary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken";
 import { deleteFileFromCloudinary } from "../utils/fileDeleteCloudinary.js";
-
+import mongoose from "mongoose";
 const options = {
   httpOnly: true,
   secure: process.env.NODE_ENV === "production", // Ensure secure cookies in production
@@ -121,6 +121,7 @@ const loginUser = asyncHandler(async (req, res) => {
 
   //check password
   const isValidPassword = await user.isPasswordValid(password);
+  
   if (!isValidPassword) {
     throw new ApiError(401, "Invalid password");
   }
